@@ -76,5 +76,3 @@ This project demonstrates a simple botnet simulation using Python. The bots can 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
 
 ---
-
-Feel free to add more sections or modify existing ones based on your specific needs. Happy coding!
